@@ -6,6 +6,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,12 +48,20 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
             CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
+        String[] whiteList = { "/", "/api/v1/auth/login", "/api/v1/auth/refresh","/api/v1/auth/register", "/storage/**",
+                "/api/v1/companies/**", "/api/v1/jobs/**"
+
+        };
         http
                 .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/", "/api/v1/auth/login", "/api/v1/auth/refresh","/storage/**").permitAll()
+                                .requestMatchers(whiteList).permitAll()
+                                // nghia la voi 1 user chua login chi xem thui , k duoc them , sua ,xoa
+                                .requestMatchers(HttpMethod.GET,"/api/v1/companies").permitAll()
+                                .requestMatchers(HttpMethod.GET ,"/api/v1/jobs").permitAll()
+                                .requestMatchers(HttpMethod.GET ,"/api/v1/skills").permitAll()
                                 .anyRequest().authenticated())
 
                 // .exceptionHandling(

@@ -1,57 +1,42 @@
 package vn.hoidanit.jobhunter.domain;
 
-import java.time.Instant;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.mapping.Join;
 import vn.hoidanit.jobhunter.service.SecurityUtil;
-import vn.hoidanit.jobhunter.utils.constant.GenderEnum;
+import vn.hoidanit.jobhunter.utils.constant.ResumeStateEnum;
+
+import java.time.Instant;
 
 @Entity
-@Table(name = "users")
+@Table(name = "resumes")
 @Getter
 @Setter
-public class User {
+public class Resume {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String name;
-    @Email(message = "Email phai dung dinh dang !")
+    private long id;
     @NotBlank(message = "Email khong duoc bo trong !")
     private String email;
-    @NotBlank(message = "Password khong duoc bo trong!")
-    private String password;
-    private int age;
+    @NotBlank(message = "upload cv khong thanh con !")
+    private String url;
     @Enumerated(EnumType.STRING)
-    private GenderEnum gender;
-    private String address;
-    @Column(columnDefinition = "MEDIUMTEXT")
-    private String refreshToken;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss ", timezone = "GMT+7")
+    private ResumeStateEnum status;
     private Instant createdAt;
-
     private Instant updatedAt;
     private String createdBy;
+
     private String updatedBy;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @JoinColumn(name="job_id")
+    private Job job;
 
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Resume> resumes;
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
 
     @PrePersist
     public void handleBeforeCreate() {
@@ -68,5 +53,7 @@ public class User {
                 : "";
         this.updatedAt = Instant.now();
     }
+
+
 
 }

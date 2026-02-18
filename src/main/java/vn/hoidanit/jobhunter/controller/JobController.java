@@ -39,8 +39,7 @@ public class JobController {
     @ApiMessage("Create a job !")
     public ResponseEntity<ResCreateJobDTO> createJob(@Valid @RequestBody Job job) {
         //skill -> skill.getId() = skill :: getId()
-        List<Skill> lstSkill = this.skillService.findListSkillById(job.getSkills().stream().map(Skill::getId).toList());
-        job.setSkills(lstSkill);
+
         ResCreateJobDTO cvtJob = this.jobService.convertToResCreateJobDTO(this.jobService.handleCreateJob(job));
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(cvtJob);
     }
@@ -52,7 +51,7 @@ public class JobController {
         if (checkJob == null) {
             throw new IdInvalidException("Job voi Id : " + job.getId() + " khong ton tai , vui long nhap lai !");
         }
-        return ResponseEntity.status(HttpStatus.OK.value()).body(this.jobService.convertToResUpdateJobDTO(this.jobService.handleUpdateJob(job)));
+        return ResponseEntity.status(HttpStatus.OK.value()).body(this.jobService.convertToResUpdateJobDTO(this.jobService.handleUpdateJob(job,checkJob)));
     }
 
     @GetMapping("/jobs")

@@ -49,7 +49,13 @@ public class SecurityUtil {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String createAccessToken(String email, ResLoginDTO.UserLogin dto) {
+    public String createAccessToken(String email, ResLoginDTO dto) {
+        // create a obj to collect infor nesscessry about token
+        ResLoginDTO.UserInsideToken userToken = new ResLoginDTO.UserInsideToken();
+        userToken.setId(dto.getUser().getId());
+        userToken.setEmail(dto.getUser().getEmail());
+        userToken.setName(dto.getUser().getName());
+
         // time bat dau va ket thuc token
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
@@ -62,7 +68,7 @@ public class SecurityUtil {
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(email)
-                .claim("user", dto)
+                .claim("user", userToken)
                 .claim("permission", listAuthority)
                 .build();
 
@@ -76,12 +82,17 @@ public class SecurityUtil {
         // time bat dau va ket thuc token
         Instant now = Instant.now();
         Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
+
+        ResLoginDTO.UserInsideToken userToken = new ResLoginDTO.UserInsideToken();
+        userToken.setId(res.getUser().getId());
+        userToken.setEmail(res.getUser().getEmail());
+        userToken.setName(res.getUser().getName());
         // Payload
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(email) // dinh danh cho 1 user khi login
-                .claim("user", res.getUserLogin()) // luu nhung mo ta thanh phan cua bien object
+                .claim("user", userToken) // luu nhung mo ta thanh phan cua bien object
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();

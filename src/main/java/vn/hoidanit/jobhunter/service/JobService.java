@@ -16,7 +16,7 @@ public interface JobService {
 
     ResCreateJobDTO convertToResCreateJobDTO(Job job);
 
-    Job handleUpdateJob(Job job);
+    Job handleUpdateJob(Job job,Job jobInDB);
 
     Job handleGetJobById(Long id);
 

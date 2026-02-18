@@ -11,6 +11,7 @@ import vn.hoidanit.jobhunter.service.CompanyService;
 import vn.hoidanit.jobhunter.utils.anotations.ApiMessage;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -61,6 +62,14 @@ public class CompanyController {
     public ResponseEntity<String> deleteCompany(@PathVariable("id") Long id) {
         this.companyService.handleDeleteCompany(id);
         return ResponseEntity.ok("Delete company successfully !");
+    }
+
+    @GetMapping("/companies/{id}")
+    @ApiMessage("Fetch company id !")
+    public ResponseEntity<Company> fetchCompanyById(@PathVariable("id") long id) {
+        Optional<Company> cOptional = this.companyService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(cOptional.get());
+
     }
 
 }

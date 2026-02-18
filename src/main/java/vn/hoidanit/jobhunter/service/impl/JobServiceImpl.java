@@ -5,9 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
+import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.Job;
 import vn.hoidanit.jobhunter.domain.Skill;
 import vn.hoidanit.jobhunter.domain.response.*;
+import vn.hoidanit.jobhunter.repository.CompanyRepository;
 import vn.hoidanit.jobhunter.repository.JobRepository;
 import vn.hoidanit.jobhunter.repository.SkillRepository;
 import vn.hoidanit.jobhunter.service.JobService;
@@ -19,14 +21,27 @@ import java.util.Optional;
 public class JobServiceImpl implements JobService {
     private JobRepository jobRepository;
     private SkillRepository skillRepository;
+    private CompanyRepository companyRepository;
 
-    public JobServiceImpl(JobRepository jobRepository, SkillRepository skillRepository) {
+    public JobServiceImpl(JobRepository jobRepository, SkillRepository skillRepository, CompanyRepository companyRepository) {
         this.jobRepository = jobRepository;
         this.skillRepository = skillRepository;
+        this.companyRepository = companyRepository;
     }
 
     @Override
     public Job handleCreateJob(Job job) {
+        //check skill
+        if (job.getSkills() != null) {
+            List<Skill> lstSkill = this.skillRepository.findByIdIn(job.getSkills().stream().map(Skill::getId).toList());
+            job.setSkills(lstSkill);
+        }
+        //checkcompany
+        if(job.getCompany() != null){
+            Optional<Company> cOptional = this.companyRepository.findById(job.getId());
+            cOptional.ifPresent(job::setCompany);
+        }
+
         return this.jobRepository.save(job);
     }
 
@@ -75,32 +90,34 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public Job handleUpdateJob(Job job) {
+    public Job handleUpdateJob(Job job, Job jobInDB) {
 
-        Job checkJob = this.handleGetJobById(job.getId());
-        //check skill
+        // checkSkill
         if (job.getSkills() != null) {
-            List<Long> reqSkill = job.getSkills().stream().map(x -> x.getId()).toList();
-            List<Skill> dbSkills = this.skillRepository.findByIdIn(reqSkill);
-            job.setSkills(dbSkills);
+            // lấy ra danh sách id
+            List<Long> reqSkills = job.getSkills().stream().map(Skill::getId).toList();
+            List<Skill> dbSkills = this.skillRepository.findByIdIn(reqSkills);
+            // cập nhật jobInDB trước ví khi update nếu người dùng quên nhập thì nó lấy ở database ghi đè lên
+            jobInDB.setSkills(dbSkills);
         }
-
-        if (checkJob != null) {
-
-            checkJob.setId(job.getId());
-            checkJob.setName(job.getName());
-            checkJob.setLocation(job.getLocation());
-            checkJob.setSalary(job.getSalary());
-            checkJob.setQuantity(job.getQuantity());
-            checkJob.setLevel(job.getLevel());
-            checkJob.setDescription(job.getDescription());
-            checkJob.setStartDate(job.getStartDate());
-            checkJob.setEndDate(job.getEndDate());
-            checkJob.setActive(job.isActive());
-            checkJob.setSkills(job.getSkills());
-            this.jobRepository.save(checkJob);
+        // checkCompany
+        if (job.getCompany() != null) {
+            Optional<Company> cOptional = this.companyRepository.findById(job.getCompany().getId());
+            if (cOptional.isPresent()) {
+                jobInDB.setCompany(cOptional.get());
+            }
         }
-        return checkJob;
+        //update info
+        jobInDB.setName(job.getName());
+        jobInDB.setSalary(job.getSalary());
+        jobInDB.setQuantity(job.getQuantity());
+        jobInDB.setLocation(job.getLocation());
+        jobInDB.setLevel(job.getLevel());
+        jobInDB.setStartDate(job.getStartDate());
+        jobInDB.setEndDate(job.getEndDate());
+        jobInDB.setActive(job.isActive());
+        // lưu xuống
+        return this.jobRepository.save(jobInDB);
     }
 
     @Override

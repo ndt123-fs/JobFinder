@@ -15,6 +15,7 @@ public class ResCompanyDTO {
     private long id;
     private String name;
     private String address;
+    private String logo;
     private Instant createdAt;
     private Instant updatedAt;
 

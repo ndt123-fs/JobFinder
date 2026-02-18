@@ -7,64 +7,45 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.hoidanit.jobhunter.service.SecurityUtil;
-import vn.hoidanit.jobhunter.utils.constant.LevelEnum;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "jobs")
+@Table(name = "roles")
 @Getter
 @Setter
-public class Job {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @NotBlank(message = "name khong duoc de trong")
-    private String name;
-    @NotBlank(message = "location khong duoc de trong")
-    private String location;
-    private double salary;
-    private int quantity;
-    @Enumerated(EnumType.STRING)
-    private LevelEnum level;
-    @Column(columnDefinition = "MEDIUMTEXT")
+    @NotBlank(message = "name khong duoc de trong !")
+    private String name ;
     private String description;
-    private Instant startDate;
-    private Instant endDate;
     private boolean active;
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
-
-    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = {"roles"})
+    @JoinTable(name = "permission_role",joinColumns = @JoinColumn(name = "role_id"),inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    private List<Permission> permissions;
+    @OneToMany(mappedBy = "role",fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Resume> resumes;
-
-
-    @ManyToMany
-    @JsonIgnoreProperties(value = {"jobs"}) // dung cai nay de bo cai thuoc tinh "jobs" khi truyen skill len phia FE, tranh vong lap vo han
-    @JoinTable(name = "job_skill",joinColumns = @JoinColumn(name = "job_id"),inverseJoinColumns = @JoinColumn(name = "skill_id"))
-    private List<Skill> skills;
+    List<User> users;
 
 
     @PrePersist
-    public void handleBeforeCreate() {
+    public void handleBeforeCreate(){
         this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
         this.createdAt = Instant.now();
-
     }
     @PreUpdate
     public void handleBeforeUpdate(){
         this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
         this.updatedAt = Instant.now();
-
     }
 
 }

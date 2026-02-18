@@ -3,19 +3,21 @@ package vn.hoidanit.jobhunter.controller;
 import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.hoidanit.jobhunter.domain.response.file.ResUploadFileDTO;
 import vn.hoidanit.jobhunter.service.FileService;
 import vn.hoidanit.jobhunter.utils.anotations.ApiMessage;
 import vn.hoidanit.jobhunter.utils.error.StorageException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
@@ -61,5 +63,26 @@ public class FileController {
 
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(res);
     }
+    @GetMapping("/downloads")
+    @ApiMessage("Download a file !")
+    public ResponseEntity<Resource>  download(@RequestParam(name = "fileName" ,required = false) String fileName,
+    @RequestParam(name="folder",required = false) String folder) throws StorageException, URISyntaxException, FileNotFoundException {
+        if (fileName == null || folder == null){
+            throw new StorageException("Missing required param !");
 
+        }
+        long fileLength = this.fileService.getFileLength(fileName,folder);
+        if ( fileLength == 0 ) {
+            throw new StorageException("File name with = " + fileName + " not found");
+        }
+        // download
+        InputStreamResource resource = this.fileService.getResource(fileName ,folder);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\"" + fileName+"\"")
+                .contentLength(fileLength)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+
+    }
 }
+
