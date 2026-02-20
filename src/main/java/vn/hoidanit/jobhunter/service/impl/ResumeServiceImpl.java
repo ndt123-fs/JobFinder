@@ -8,15 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import vn.hoidanit.jobhunter.domain.Resume;
-import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.resume.ResCreateResumeDTO;
 import vn.hoidanit.jobhunter.domain.response.resume.ResResumeDTO;
 import vn.hoidanit.jobhunter.domain.response.resume.ResUpdateResumDTO;
-import vn.hoidanit.jobhunter.domain.response.resume.Resumedto;
 import vn.hoidanit.jobhunter.repository.JobRepository;
 import vn.hoidanit.jobhunter.repository.ResumeRepository;
 import vn.hoidanit.jobhunter.repository.UserRepository;
@@ -24,8 +21,6 @@ import vn.hoidanit.jobhunter.service.ResumeService;
 import vn.hoidanit.jobhunter.service.SecurityUtil;
 import vn.hoidanit.jobhunter.utils.error.IdInvalidException;
 
-import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -172,4 +167,6 @@ public class ResumeServiceImpl implements ResumeService {
 
         return rs;
     }
+
+
 }

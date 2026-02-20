@@ -48,9 +48,9 @@ public class PermissionInterceptor implements HandlerInterceptor {
                     boolean isAllow = permissions.stream().anyMatch(item ->
                             item.getApiPath().equals(path) && item.getMethod().equals(httpMethod)
                     );
-                    if (!isAllow) {
-                        throw new PermissionException("Ban khong co quyen han !");
-                    }
+//                    if (!isAllow) {
+//                        throw new PermissionException("Ban khong co quyen han !");
+//                    }
                 } else {
                     throw new PermissionException("Ban khong co quyen han !");
                 }

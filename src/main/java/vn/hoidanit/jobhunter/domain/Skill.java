@@ -26,9 +26,12 @@ public class Skill {
     private String updatedBy;
    // dinh nghia mapped ben obj nao , thi joinTable ben doi tuong con lai (N-N)
     @ManyToMany(fetch = FetchType.LAZY,mappedBy = "skills")
-    @JsonIgnore // nho de annotaion nay ma khi truy van k bi vong lap vo han
+    @JsonIgnore // nho de annotaion nay ma khi truy van k bi vong lap vo han , co the la an field do luon
     private List<Job> jobs;
-
+    //
+    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "skills")
+    @JsonIgnore // dung chi de bo dung 1 field
+    private List<Subscriber> subscribers;
 
 
 
