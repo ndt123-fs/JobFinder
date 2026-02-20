@@ -16,4 +16,6 @@ public interface SubscriberService {
     void sendSubscribersEmailJobs();
 
     ResEmailJob convertJobToSendEmail(Job job);
+
+    Subscriber findByEmails(String email);
 }

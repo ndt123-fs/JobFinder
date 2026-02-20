@@ -33,7 +33,7 @@ public class RoleServiceImpl implements RoleService {
             throw new IdInvalidException(role.getName() + " da ton tai !");
         }
         // phải check != null nếu k check giả sử db chưa có thì stream() sẽ bi null
-        if (role.getPermissions() != null ){
+        if (role.getPermissions() != null) {
             List<Long> idList = role.getPermissions().stream().map(Permission::getId).toList();
             List<Permission> lstPermission = this.permissionRepository.findByIdIn(idList);
             role.setPermissions(lstPermission);
@@ -51,28 +51,30 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role handleUpdateRole(Role role) throws IdInvalidException {
+        Role roleDB = this.fetchRoleById(role.getId());
+        if (role.getPermissions() != null) {
+            List<Long> listIdPer = role.getPermissions().stream().map(Permission::getId).toList();
+            List<Permission> lstPermission = this.permissionRepository.findByIdIn(listIdPer);
+            role.setPermissions(lstPermission);
+        }
         // checkId
-        Role currentRole = this.fetchRoleById(role.getId());
-        if (currentRole == null) {
-            throw new IdInvalidException("Role voi id : "+ role.getId()+ " khong ton tai !");
+
+        if (roleDB == null) {
+            throw new IdInvalidException("Role voi id : " + role.getId() + " khong ton tai !");
         }
         // checkName
 //        boolean checkName = this.roleRepository.existsByName(role.getName());
 //        if (checkName) {
 //            throw new IdInvalidException("Role voi name: " +role.getName() +" da ton tai !");
 //        }
-        if(role.getPermissions() != null){
-            List<Long> listId = currentRole.getPermissions().stream().map(Permission::getId).toList();
-            List<Permission> lstPermission =  this.permissionRepository.findByIdIn(listId);
-            role.setPermissions(lstPermission);
-        }
 
-        currentRole.setName(role.getName());
-        currentRole.setDescription(role.getDescription());
-        currentRole.setActive(role.isActive());
-        currentRole.setPermissions(role.getPermissions());
-        this.roleRepository.save(currentRole);
-        return currentRole;
+
+        roleDB.setName(role.getName());
+        roleDB.setDescription(role.getDescription());
+        roleDB.setActive(role.isActive());
+        roleDB.setPermissions(role.getPermissions());
+        roleDB = this.roleRepository.save(roleDB);
+        return roleDB;
 
     }
 
@@ -94,9 +96,10 @@ public class RoleServiceImpl implements RoleService {
 
 
     }
+
     @Override
-    public void deleteRole(long id){
-     this.roleRepository.deleteById(id);
+    public void deleteRole(long id) {
+        this.roleRepository.deleteById(id);
     }
 }
 

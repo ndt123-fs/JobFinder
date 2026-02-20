@@ -1,4 +1,8 @@
 package vn.hoidanit.jobhunter.repository;
 
-public interface EmailRepository {
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface EmailRepository  {
 }

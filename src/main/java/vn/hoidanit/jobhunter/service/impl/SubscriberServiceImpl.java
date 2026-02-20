@@ -2,6 +2,7 @@ package vn.hoidanit.jobhunter.service.impl;
 
 import jakarta.validation.constraints.Email;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import vn.hoidanit.jobhunter.domain.Job;
@@ -106,6 +107,15 @@ public class SubscriberServiceImpl implements SubscriberService {
         res.setSkills(s);
         return res;
     }
+    @Override
+    public Subscriber findByEmails(String email) {
+        return this.subscriberRepository.findByEmail(email);
+    }
+
+//    @Scheduled(cron = "*/10 * * * * *")
+//    public void testCron(){
+//        System.out.println("TEST");
+//    }
 
 }
 

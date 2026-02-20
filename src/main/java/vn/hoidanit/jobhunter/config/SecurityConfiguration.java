@@ -59,9 +59,9 @@ public class SecurityConfiguration {
                         authz -> authz
                                 .requestMatchers(whiteList).permitAll()
                                 // nghia la voi 1 user chua login chi xem thui , k duoc them , sua ,xoa
-                                .requestMatchers(HttpMethod.GET,"/api/v1/companies").permitAll()
-                                .requestMatchers(HttpMethod.GET ,"/api/v1/jobs").permitAll()
-                                .requestMatchers(HttpMethod.GET ,"/api/v1/skills").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/v1/companies/**").permitAll()
+                                .requestMatchers(HttpMethod.GET ,"/api/v1/jobs/**").permitAll()
+                                .requestMatchers(HttpMethod.GET ,"/api/v1/skills/**").permitAll()
                                 .anyRequest().authenticated())
 
                 // .exceptionHandling(

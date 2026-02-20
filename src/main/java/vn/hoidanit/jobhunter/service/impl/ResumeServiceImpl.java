@@ -100,7 +100,8 @@ public class ResumeServiceImpl implements ResumeService {
         meta.setTotal(pageResume.getTotalElements());
         //
         result.setMeta(meta);
-        result.setResult(pageResume.getContent().stream().map(item -> this.convertResumeDTO(this.getResumeById(item.getId()))).toList());
+        result.setResult(pageResume.getContent().stream().map(item ->
+                this.convertResumeDTO(this.getResumeById(item.getId()))).toList());
         return result;
 
     }

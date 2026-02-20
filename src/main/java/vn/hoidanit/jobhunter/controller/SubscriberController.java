@@ -1,11 +1,13 @@
 package vn.hoidanit.jobhunter.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import vn.hoidanit.jobhunter.domain.Subscriber;
+import vn.hoidanit.jobhunter.service.SecurityUtil;
 import vn.hoidanit.jobhunter.service.SubscriberService;
 import vn.hoidanit.jobhunter.utils.anotations.ApiMessage;
 import vn.hoidanit.jobhunter.utils.error.EmailInvalidException;
@@ -37,6 +39,13 @@ public class SubscriberController {
 
         return ResponseEntity.status(HttpStatus.OK.value()).body(this.subscriberService.handleUpdateSubscriber(subscriberRq, subDB));
 
+    }
+    @PostMapping("/subscribers/skills")
+    @ApiMessage("Get's subscribers !")
+    public ResponseEntity<Subscriber>getSubscriberSkills() throws  EmailInvalidException {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent()?SecurityUtil.getCurrentUserLogin().get() :"";
+        System.out.println(this.subscriberService.findByEmails(email));
+        return ResponseEntity.status(HttpStatus.OK.value()).body(this.subscriberService.findByEmails(email));
     }
 
 }

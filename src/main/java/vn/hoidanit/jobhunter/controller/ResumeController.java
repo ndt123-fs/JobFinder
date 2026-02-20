@@ -26,6 +26,7 @@ import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.utils.anotations.ApiMessage;
 import vn.hoidanit.jobhunter.utils.error.IdInvalidException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,29 +99,33 @@ public class ResumeController {
     @GetMapping("/resumes")
     @ApiMessage("Get all resume !")
     public ResponseEntity<ResultPaginationDTO> getAllResume(@Filter Specification<Resume> spec, Pageable pageable) {
-        List<Long> jobIdList = null;
-        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+       //filer Resume by Company (logic : tu user -> company_id->Job->job_id)
+        // Lọc resume theo các job thuộc cùng 1 công ty của user đăng login
+
+        List<Long> arrJobIds = new ArrayList<>();
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
         User currentUser = this.userService.handleGetUserByUsername(email);
         if (currentUser != null) {
-            Company company = currentUser.getCompany();
-            if (company != null) {
-                List<Job> companyJob = company.getJobs();
-                if (companyJob != null && !companyJob.isEmpty()) {
-                    jobIdList = companyJob.stream().map(Job::getId).toList();
+            Company userCompany = currentUser.getCompany();
+            if (userCompany != null) {
+                List<Job> companyJobs = userCompany.getJobs();
+                if (companyJobs != null && companyJobs.size() > 0) {
+                    arrJobIds = companyJobs.stream().map(x -> x.getId())
+                            .collect(Collectors.toList());
                 }
             }
         }
 
-        // viet cau truy van
-        Specification<Resume> jobInSpec =
-                filterSpecificationConverter.convert(
-                        filterBuilder.field("job")
-                                .in(filterBuilder.input(jobIdList))
-                                .get()
-                );
-        //ket hop 2 cau truy van
+        final List<Long> fArrJobIds = arrJobIds;
+        Specification<Resume> jobInSpec = (root, query, criteriaBuilder) -> {
+            return criteriaBuilder.in(root.get("job").get("id")).value(fArrJobIds);
+        };
+
         Specification<Resume> finalSpec = jobInSpec.and(spec);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(this.resumeService.getAllResume(finalSpec, pageable));
+
+        return ResponseEntity.ok().body(this.resumeService.getAllResume(finalSpec, pageable));
 
     }
 

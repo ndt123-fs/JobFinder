@@ -2,6 +2,8 @@ package vn.hoidanit.jobhunter.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,8 @@ public class EmailController {
 
     @GetMapping("/emails")
     @ApiMessage("Send simple email !")
+//    @Scheduled(cron = "*/10 * * * * *")
+//    @Transactional
     public ResponseEntity<String> sendSimpleEmail() {
       //  this.emailService.sendSimpleEmail();
        // this.emailService.sendMailAsync("nduytin13112005@gmail.com","TEST","<b>HELLO<b>",false,true);t
