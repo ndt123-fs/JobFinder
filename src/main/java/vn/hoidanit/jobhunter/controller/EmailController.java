@@ -7,21 +7,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.hoidanit.jobhunter.service.EmailService;
+import vn.hoidanit.jobhunter.service.SubscriberService;
 import vn.hoidanit.jobhunter.utils.anotations.ApiMessage;
 
 @RestController
 @RequestMapping("/api/v1")
 public class EmailController {
     private final EmailService emailService;
+    private final SubscriberService subscriberService;
 
-    public EmailController(EmailService emailService) {
+    public EmailController(EmailService emailService,SubscriberService subscriberService) {
         this.emailService = emailService;
+        this.subscriberService = subscriberService;
     }
 
     @GetMapping("/emails")
     @ApiMessage("Send simple email !")
     public ResponseEntity<String> sendSimpleEmail() {
-        this.emailService.sendSimpleEmail();
+      //  this.emailService.sendSimpleEmail();
+       // this.emailService.sendMailAsync("nduytin13112005@gmail.com","TEST","<b>HELLO<b>",false,true);t
+      //  this.emailService.sendMailFromTemplateSync("nduytin13112005@gmail.com","Test","job",);
+        this.subscriberService.sendSubscribersEmailJobs();
+
         return ResponseEntity.status(HttpStatus.OK.value()).body("Send email succesfull !");
     }
 }
