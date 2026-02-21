@@ -68,9 +68,12 @@ public class EmailServiceImpl implements EmailService {
     public void sendMailFromTemplateSync(String to, String subject, String templateName,String username,Object value) {
         // Context co 1 cai locale , giup truyen ngon ngu vao ben trong
         Context context = new Context();
-        context.setVariable("name",username);
+        //mame luc cron job
+        context.setVariable("namee",username);
 
         context.setVariable("jobs",value);
+        // name nay luc register
+        context.setVariable("name",value);
         String content = templateEngine.process(templateName,context);
         this.sendMailAsync(to,subject,content,false,true);
 

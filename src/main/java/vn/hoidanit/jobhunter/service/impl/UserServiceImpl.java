@@ -1,7 +1,5 @@
 package vn.hoidanit.jobhunter.service.impl;
 
-import java.lang.StackWalker.Option;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,9 +11,9 @@ import org.springframework.stereotype.Service;
 import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.Role;
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
-import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
-import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResUpdateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 
 import vn.hoidanit.jobhunter.repository.UserRepository;

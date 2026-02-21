@@ -32,5 +32,4 @@ public class ResEmailJob {
     public static class SkillEmail {
         private String name;
     }
-
 }

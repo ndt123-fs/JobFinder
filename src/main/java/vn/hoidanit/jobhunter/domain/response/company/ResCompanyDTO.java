@@ -1,4 +1,4 @@
-package vn.hoidanit.jobhunter.domain.response;
+package vn.hoidanit.jobhunter.domain.response.company;
 
 import java.time.Instant;
 

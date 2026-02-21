@@ -1,6 +1,5 @@
-package vn.hoidanit.jobhunter.domain.response;
+package vn.hoidanit.jobhunter.domain.response.job;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.hoidanit.jobhunter.utils.constant.LevelEnum;

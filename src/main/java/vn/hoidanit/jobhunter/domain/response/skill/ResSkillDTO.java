@@ -1,9 +1,5 @@
-package vn.hoidanit.jobhunter.domain.response;
+package vn.hoidanit.jobhunter.domain.response.skill;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

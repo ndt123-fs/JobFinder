@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,18 +19,15 @@ import org.springframework.http.HttpHeaders;
 import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.request.ReqLoginDTO;
-import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
-import vn.hoidanit.jobhunter.domain.response.ResLoginDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.auth.ResLoginDTO;
 import vn.hoidanit.jobhunter.service.SecurityUtil;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.utils.anotations.ApiMessage;
 import vn.hoidanit.jobhunter.utils.error.IdInvalidException;
 
-import vn.hoidanit.jobhunter.utils.error.MissingRequestCookieException;
-
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -64,7 +60,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         // create token
 
-        ResLoginDTO res = new ResLoginDTO();
+       ResLoginDTO res = new ResLoginDTO();
         User user = this.userService.handleGetUserByUsername(loginDTO.getUsername());
         if (user != null) {
 

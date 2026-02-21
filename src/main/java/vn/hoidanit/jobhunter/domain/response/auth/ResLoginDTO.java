@@ -1,4 +1,4 @@
-package vn.hoidanit.jobhunter.domain.response;
+package vn.hoidanit.jobhunter.domain.response.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

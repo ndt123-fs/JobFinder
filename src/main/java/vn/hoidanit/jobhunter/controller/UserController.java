@@ -1,11 +1,8 @@
 package vn.hoidanit.jobhunter.controller;
 
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,19 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
-import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
-import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
-import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResUpdateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.service.EmailService;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.utils.anotations.ApiMessage;
 import vn.hoidanit.jobhunter.utils.error.EmailInvalidException;
 import vn.hoidanit.jobhunter.utils.error.IdInvalidException;
-
-import java.util.List;
-import java.util.Optional;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,17 +28,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder,EmailService emailService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     // POST
@@ -64,6 +59,9 @@ public class UserController {
         userCreate.setPassword(hashPassword);
         User newUser = this.userService.handleSaveUser(userCreate);
         ResCreateUserDTO resUser = this.userService.convertToResCreateUserDTO(newUser);
+        // Gui gmail
+        this.emailService.sendMailFromTemplateSync(userCreate.getEmail(),"Register User at Job Hunter",
+                "register", userCreate.getName(), userCreate.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(resUser);
     }
 

@@ -9,19 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import vn.hoidanit.jobhunter.domain.Job;
-import vn.hoidanit.jobhunter.domain.Skill;
-import vn.hoidanit.jobhunter.domain.response.ResCreateJobDTO;
-import vn.hoidanit.jobhunter.domain.response.ResUpdateJobDTO;
+import vn.hoidanit.jobhunter.domain.response.job.ResCreateJobDTO;
+import vn.hoidanit.jobhunter.domain.response.job.ResUpdateJobDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.service.JobService;
 import vn.hoidanit.jobhunter.service.SkillService;
 import vn.hoidanit.jobhunter.utils.anotations.ApiMessage;
 import vn.hoidanit.jobhunter.utils.error.IdInvalidException;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @RestController
 @Validated

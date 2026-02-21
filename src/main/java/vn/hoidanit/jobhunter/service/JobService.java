@@ -3,8 +3,8 @@ package vn.hoidanit.jobhunter.service;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import vn.hoidanit.jobhunter.domain.Job;
-import vn.hoidanit.jobhunter.domain.response.ResCreateJobDTO;
-import vn.hoidanit.jobhunter.domain.response.ResUpdateJobDTO;
+import vn.hoidanit.jobhunter.domain.response.job.ResCreateJobDTO;
+import vn.hoidanit.jobhunter.domain.response.job.ResUpdateJobDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 
 
