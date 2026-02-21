@@ -48,8 +48,11 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
             CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
-        String[] whiteList = { "/", "/api/v1/auth/login", "/api/v1/auth/refresh","/api/v1/auth/register", "/storage/**",
-                "/api/v1/companies/**", "/api/v1/jobs/**"
+        String[] whiteList = { "/", "/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/register",
+                "/storage/**",
+                "/api/v1/companies/**", "/api/v1/jobs/**", "/v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.html"
 
         };
         http
@@ -59,9 +62,9 @@ public class SecurityConfiguration {
                         authz -> authz
                                 .requestMatchers(whiteList).permitAll()
                                 // nghia la voi 1 user chua login chi xem thui , k duoc them , sua ,xoa
-                                .requestMatchers(HttpMethod.GET,"/api/v1/companies/**").permitAll()
-                                .requestMatchers(HttpMethod.GET ,"/api/v1/jobs/**").permitAll()
-                                .requestMatchers(HttpMethod.GET ,"/api/v1/skills/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/skills/**").permitAll()
                                 .anyRequest().authenticated())
 
                 // .exceptionHandling(

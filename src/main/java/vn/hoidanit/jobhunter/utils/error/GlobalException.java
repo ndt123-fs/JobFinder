@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +22,15 @@ import vn.hoidanit.jobhunter.domain.response.RestResponse;
 
 @RestControllerAdvice
 public class GlobalException {
+    @ExceptionHandler(value = { Exception.class })
+    public ResponseEntity<RestResponse<Object>> handleAllException(Exception ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setMessage(ex.getMessage());
+        res.setError("Internal Server Error !");
+        res.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(res);
+    }
+
     @ExceptionHandler(value = {
             BadCredentialsException.class, UsernameNotFoundException.class,
             EmailInvalidException.class, IdInvalidException.class,
@@ -57,7 +67,7 @@ public class GlobalException {
     // }
     @ExceptionHandler(value = NoResourceFoundException.class)
     public ResponseEntity<RestResponse<Object>> handleNotFoundException(NoResourceFoundException e,
-                                                                        WebRequest request) {
+            WebRequest request) {
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.NOT_FOUND.value());
         res.setError("404 not found.URL may not exist !");
@@ -68,7 +78,7 @@ public class GlobalException {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<RestResponse<Object>> handleMethodNotValidException(MethodArgumentNotValidException e,
-                                                                              WebRequest request) {
+            WebRequest request) {
         // lay vaidation
         BindingResult result = e.getBindingResult();
         final List<FieldError> fieldErrors = result.getFieldErrors();
@@ -91,7 +101,7 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
-    @ExceptionHandler(value = {StorageException.class})
+    @ExceptionHandler(value = { StorageException.class })
     public ResponseEntity<RestResponse<Object>> handleUploadFileException(StorageException ex, WebRequest request) {
 
         RestResponse<Object> res = new RestResponse<Object>();
