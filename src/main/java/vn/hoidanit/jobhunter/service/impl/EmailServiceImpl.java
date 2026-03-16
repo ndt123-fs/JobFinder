@@ -72,6 +72,7 @@ public class EmailServiceImpl implements EmailService {
         context.setVariable("namee",username);
 
         context.setVariable("jobs",value);
+
         // name nay luc register
         context.setVariable("name",value);
         String content = templateEngine.process(templateName,context);

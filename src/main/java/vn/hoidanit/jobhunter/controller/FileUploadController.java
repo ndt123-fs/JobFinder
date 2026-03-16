@@ -1,7 +1,6 @@
 package vn.hoidanit.jobhunter.controller;
 
 import jakarta.validation.Valid;
-import org.apache.tomcat.util.http.fileupload.InvalidFileNameException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -27,14 +26,14 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1")
 @Validated
-public class FileController {
+public class FileUploadController {
 
     @Value("${hoidanit.upload-file.base-uri}")
     private String baseUri;
 
     private FileService fileService;
 
-    public FileController(FileService fileService) {
+    public FileUploadController(FileService fileService) {
         this.fileService = fileService;
     }
 
